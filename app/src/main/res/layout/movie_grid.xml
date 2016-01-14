@@ -5,9 +5,18 @@
              android:layout_gravity="center"
              tools:context=".ForecastFragment"
              tools:showIn="@layout/content_main">
-<GridView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/movie_grid_view"/>
+    <GridView xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/gridview"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:columnWidth="325dp"
+              android:numColumns="2"
+              android:verticalSpacing="10dp"
+              android:horizontalSpacing="10dp"
+              android:stretchMode="columnWidth"
+              android:gravity="center"
+        />
+
+    <include layout="@layout/movie_images_grid"/>
 
 </FrameLayout>

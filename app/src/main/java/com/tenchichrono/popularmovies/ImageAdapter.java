@@ -14,48 +14,50 @@ public class ImageAdapter extends BaseAdapter
 {
     private Context mContext;
 
-    public ImageAdapter()
-    {
-
+    public ImageAdapter(Context c) {
+        mContext = c;
     }
 
-
-    @Override
     public int getCount() {
-        return 0;
+        return mThumbIds.length;
     }
 
-    @Override
     public Object getItem(int position) {
         return null;
     }
 
-    @Override
     public long getItemId(int position) {
         return 0;
     }
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent)
-    {
+    // create a new ImageView for each item referenced by the Adapter
+    public View getView(int position, View convertView, ViewGroup parent) {
         ImageView imageView;
-
-        if (convertView == null)
-        {
+        if (convertView == null) {
+            // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
-            imageView.setScaleType((ImageView.ScaleType.CENTER_CROP));
+            imageView.setLayoutParams(new GridView.LayoutParams(300, 300));
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setPadding(8, 8, 8, 8);
-        } else
-        {
+        } else {
             imageView = (ImageView) convertView;
         }
-        imageView.setImageResource(mThumbs[position]);
-        return null;
+
+        imageView.setImageResource(mThumbIds[position]);
+        return imageView;
     }
 
-    public Integer[] mThumbs = {
+    // references to our images
+    private Integer[] mThumbIds = {
+            R.drawable.movies_01,
+            R.drawable.movies_02,
+            R.drawable.movies_03,
+            R.drawable.movies_04,
+            R.drawable.movies_05,
+            R.drawable.movies_06,
+            R.drawable.movies_07,
+            R.drawable.movies_08,
+            R.drawable.movies_09
 
-
-            };
+    };
 }
