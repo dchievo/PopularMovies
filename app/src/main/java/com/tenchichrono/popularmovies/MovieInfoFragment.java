@@ -2,7 +2,6 @@ package com.tenchichrono.popularmovies;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +30,6 @@ public class MovieInfoFragment extends Fragment {
         Intent intent = getActivity().getIntent();
         ImageView imageView = (ImageView) view.findViewById(R.id.movie_title_image_view);
 
-        imageView.setImageDrawable(intent.getParcelableExtra(MainActivity.MOVIE));
         return view;
     }
 

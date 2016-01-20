@@ -1,21 +1,23 @@
 package com.tenchichrono.popularmovies;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String MOVIE = "";
     private ImageAdapter mImageAdapter;
+    private String[] movies;
+    GridView mGridView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,22 +26,20 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        GridView gridView = (GridView)findViewById(R.id.gridview);
-        mImageAdapter = new ImageAdapter(this);
-        gridView.setAdapter(mImageAdapter);
+        mGridView = (GridView) findViewById(R.id.gridview);
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ImageView imageView = (ImageView) findViewById(R.id.movie_title_image_view);
-                Intent intent = new Intent(getApplication().getApplicationContext(), MovieInfo.class);
-                intent.putExtra(MOVIE, (Parcelable) imageView);
-                startActivity(intent);
-            }
-        });
+        mGridView.setAdapter(createArr);
+
+
+
     }
 
+    private ArrayAdapter<String> createArrayAdapter(List<String> fakeData)
+    {
+        adapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.listview_forecast_textview, new ArrayList<String>());
 
+        return adapter;
+    }
 
 
 
@@ -64,5 +64,28 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    private TheMovieDB grabMovieInfo()
+    {
+        TheMovieDB theMovieDB = new TheMovieDB();
+
+        theMovieDB.execute();
+        try {
+            movies = theMovieDB.get();
+            Log.i("Movies:", movies.length + "");
+        } catch (Exception e) {
+            Log.i("grabMovieException:", e + "");
+        }
+
+        return theMovieDB;
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        grabMovieInfo();
+    }
+
 
 }
