@@ -1,22 +1,25 @@
 package com.tenchichrono.popularmovies;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String MOVIE = "";
     private ImageAdapter mImageAdapter;
-    private String[] movies;
+    private List<Movies> movies;
     GridView mGridView;
 
     @Override
@@ -25,22 +28,29 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        TextView topTextView = (TextView) findViewById(R.id.topTextView);
 
-        mGridView = (GridView) findViewById(R.id.gridview);
+        movies = grabMovieInfo();
+        topTextView.setText("Top " + movies.size() + " Popular Movies");
+        Log.i("Movies", movies.get(0).getPosterURL());
+        GridView gridView = (GridView) findViewById(R.id.gridview);
+        gridView.setAdapter(new ImageAdapter(this, movies));
 
-        mGridView.setAdapter(createArr);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(MainActivity.this, "" + position, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent();
+                //intent.putParcelableArrayListExtra("Movies", (ArrayList<? extends Parcelable>) movies);
+                intent.putSeri("Movies",movies);
+                intent.setClass(MainActivity.this, MovieInfo.class);
+                startActivity(intent);
+            }
+        });
 
 
 
     }
-
-    private ArrayAdapter<String> createArrayAdapter(List<String> fakeData)
-    {
-        adapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.listview_forecast_textview, new ArrayList<String>());
-
-        return adapter;
-    }
-
 
 
     @Override
@@ -65,19 +75,19 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private TheMovieDB grabMovieInfo()
+    private List<Movies> grabMovieInfo()
     {
         TheMovieDB theMovieDB = new TheMovieDB();
 
         theMovieDB.execute();
         try {
             movies = theMovieDB.get();
-            Log.i("Movies:", movies.length + "");
+            Log.i("Movies:", movies.size() + "");
         } catch (Exception e) {
             Log.i("grabMovieException:", e + "");
         }
 
-        return theMovieDB;
+        return movies;
     }
 
     @Override
@@ -86,6 +96,5 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         grabMovieInfo();
     }
-
 
 }

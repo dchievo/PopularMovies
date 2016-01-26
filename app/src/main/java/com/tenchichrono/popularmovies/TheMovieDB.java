@@ -12,35 +12,39 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by dchi on 1/20/2016.
  */
-public class TheMovieDB extends AsyncTask<String, Void, String[]>
+public class TheMovieDB extends AsyncTask<String, Void, List<Movies>> implements Serializable
 {
     private final String LOG_TAG = TheMovieDB.class.getSimpleName();
+    private List<Movies> mMovies;
 
     @Override
-    protected String[] doInBackground(String... params) {
+    protected List<Movies> doInBackground(String... params) {
 /*        if (params.length == 0)
         {
             Log.i("Length","Equals 0");
             return null;
         }*/
-        String[] movies = new String[100];
+        mMovies = new ArrayList<>();
         try {
-            movies = getMovieDataFromJSON(getMovieInfo());
+            mMovies = getMovieDataFromJSON(getMovieInfo());
         } catch (JSONException e)
         {
             Log.i("JSONException", e.toString());
         }
-        return movies;
+        return mMovies;
     }
 
 
-    private String[] getMovieDataFromJSON(String movieJSONStr) throws JSONException
+/*    private String[] getMovieDataFromJSON(String movieJSONStr) throws JSONException
     {
         final String TMDB_results = "results";
         final String TMDB_title = "title";
@@ -67,6 +71,46 @@ public class TheMovieDB extends AsyncTask<String, Void, String[]>
             Log.i(LOG_TAG, results[i]);
         }
         return results;
+    }*/
+
+    private List<Movies> getMovieDataFromJSON(String movieJSONStr) throws JSONException
+    {
+        final String TMDB_RESULTS = "results";
+        final String TMDB_TITLE = "title";
+        final String TMDB_ID = "id";
+        final String TMDB_GENRE_IDS = "genre_ids";
+        final String TMDB_VOTE_AVERAGE = "vote_average";
+        final String TMDB_OVER = "overview";
+        final String TMDB_RELEASE_DATE = "release_date";
+        final String TMDB_POSTER_PATH = "poster_path";
+        final String TMDB_IMAGE_PATH = "https://image.tmdb.org/t/p/w185";
+
+        JSONObject popularMoviesJSON = new JSONObject(movieJSONStr);
+        JSONArray popularMoviesJSONArray = popularMoviesJSON.getJSONArray(TMDB_RESULTS);
+
+        //popularMoviesJSONArray.getString();
+
+
+        List<Movies> movieList = new ArrayList<>();
+
+        for (int i = 0; i < popularMoviesJSONArray.length(); i++)
+        {
+            Movies movies = new Movies();
+
+
+            JSONObject popularMovie = popularMoviesJSONArray.getJSONObject(i);
+            movies.setTitle(popularMovie.getString(TMDB_TITLE));
+            movies.setDate(popularMovie.getString(TMDB_RELEASE_DATE));
+            movies.setPosterURL(TMDB_IMAGE_PATH + popularMovie.getString(TMDB_POSTER_PATH));
+            movies.setDescription(popularMovie.getString(TMDB_OVER));
+            movies.setID(popularMovie.getString(TMDB_ID));
+            movies.setRating(popularMovie.getString(TMDB_VOTE_AVERAGE));
+            movies.setGenre(popularMovie.getString(TMDB_ID));
+            movieList.add(movies);
+            Log.i(LOG_TAG, movies.getDate());
+
+        }
+        return movieList;
     }
 
     private String getMovieInfo()

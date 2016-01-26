@@ -19,6 +19,7 @@
         android:layout_height="wrap_content"
         android:text="Top 9 Popular Movies"
         android:textAlignment="center"
+        android:id="@+id/topTextView"
         android:paddingBottom="10dp"/>
 
 <include layout="@layout/movie_grid"

@@ -17,6 +17,6 @@
               android:gravity="center"
         />
 
-    <include layout="@layout/movie_images_grid"/>
+    <!--<include layout="@layout/movie_images_grid"/>-->
 
 </FrameLayout>
